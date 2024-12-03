@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Carousel</title>
+    <style>
+        #image {
+            display: none;
+        }
+
+        #carousel img {
+            display: block;
+            margin: 0 auto;
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        #carousel {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <input id="input" type="file" onchange="pickAPicture()">
+    <img width="200px" height="200px" src="" id="image" alt="">
+
+    <div id="carousel"></div>
+</body>
+
+</html>
+
+<script>
+    let array = [];
+    let index = 0;
+
+    function pickAPicture() {
+        let myInput = document.getElementById('input');
+        let file = myInput.files[0];
+        let reader = new FileReader();
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+
+        reader.addEventListener('load', (e) => {
+            let dataUrl = e.target.result;
+
+        
+            if (array.length < 5) {
+                array.push(dataUrl);
+            } else {
+                
+                array.shift();
+                array.push(dataUrl);
+            }
+
+            
+            index = array.length - 1;
+
+    
+            displayCarousel();
+        });
+    }
+
+    function displayCarousel() {
+        const carousel = document.getElementById('carousel');
+        if (array.length === 0) {
+            carousel.innerHTML = "<p>No images in the carousel</p>";
+        } else {
+            carousel.innerHTML = `
+                <button onclick="prev()">Prev</button>
+                <img src="${array[index]}" alt="carousel image">
+                <button onclick="next()">Next</button>
+            `;
+        }
+    }
+
+    function next() {
+        if (index === array.length - 1) {
+            index = 0; 
+        } else {
+            index++;
+        }
+        displayCarousel();
+    }
+
+    function prev() {
+        if (index === 0) {
+            index = array.length - 1; 
+        } else {
+            index--;
+        }
+        displayCarousel();
+    }
+
+
+    displayCarousel();
+</script>
